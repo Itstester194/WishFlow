@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
+// enough when changing adapters.
+// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.sqlite"
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+}
+
+// ---------------------------------------------------------------
+// WishFlow wishlist data
+// ---------------------------------------------------------------
+
+// One wishlist per shopper. Logged-in customers are identified by their
+// Shopify customer ID (verified by the app proxy signature); guests by a
+// random ID stored in their browser.
+model Wishlist {
+  id         String         @id @default(cuid())
+  shop       String
+  ownerType  String // "customer" | "guest"
+  ownerId    String
+  shareToken String         @unique
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  items      WishlistItem[]
+
+  @@unique([shop, ownerType, ownerId])
+  @@index([shop, updatedAt])
+}
+
+model WishlistItem {
+  id         String   @id @default(cuid())
+  wishlistId String
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  shop       String
+  productId  String // numeric Shopify product ID
+  variantId  String?
+  handle     String
+  addedAt    DateTime @default(now())
+
+  @@unique([wishlistId, productId])
+  @@index([shop, productId])
+}
+
+// Activity log used for the dashboard: add, remove, add_to_cart, share
+model WishlistEvent {
+  id        String   @id @default(cuid())
+  shop      String
+  type      String
+  productId String?
+  ownerType String
+  ownerId   String
+  createdAt DateTime @default(now())
+
+  @@index([shop, createdAt])
+  @@index([shop, type, createdAt])
+}
+
+// Price updates received for products that are in at least one wishlist
+model PriceChange {
+  id             String   @id @default(cuid())
+  shop           String
+  productId      String
+  variantId      String?
+  productTitle   String?
+  variantTitle   String?
+  price          String?
+  compareAtPrice String?
+  createdAt      DateTime @default(now())
+
+  @@index([shop, createdAt])
+}

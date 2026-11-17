@@ -1,0 +1,65 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "41a03953d3251753888c9319dabb4763"
+name = "WishFlow"
+application_url = "https://example.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[webhooks]
+api_version = "2027-01"
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/uninstalled"
+  topics = [ "app/uninstalled" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/scopes_update"
+  topics = [ "app/scopes_update" ]
+
+  # Mandatory privacy webhooks for the Shopify App Store
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/compliance"
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+
+[events]
+api_version = "2026-10"
+
+  [[events.subscription]]
+  handle = "product-price-change"
+  topic = "Product"
+  actions = [ "update" ]
+  triggers = [ "product.variants.price", "product.variants.compareAtPrice" ]
+  uri = "/webhooks/products/update"
+  query = """
+  query product_variant_price_change($productId: ID!, $variantsId: ID!) {\r
+    product(id: $productId) {\r
+      id\r
+      title\r
+      status\r
+    }\r
+    productVariant(id: $variantsId) {\r
+      id\r
+      title\r
+      price\r
+      compareAtPrice\r
+    }\r
+  }\r
+  """
+  query_filter = "product.status:'ACTIVE'"
+
+# Storefront wishlist page + API: https://<store>/apps/wishlist
+[app_proxy]
+url = "https://example.com/proxy"
+subpath = "wishlist"
+prefix = "apps"
+
+[auth]
+redirect_urls = [ "https://example.com/api/auth" ]
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true

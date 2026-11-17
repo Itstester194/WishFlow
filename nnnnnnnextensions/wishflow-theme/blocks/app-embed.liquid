@@ -1,0 +1,140 @@
+{%- comment -%}
+  WishFlow app embed. Turn it on in Online Store > Themes > Customize > App embeds.
+  Loads the wishlist script on every page: header icon + counter, hearts on
+  product cards (collection, search, home page), and the wishlist page at /apps/wishlist.
+{%- endcomment -%}
+<style>
+  :root {
+    --wf-active: {{ block.settings.active_color }};
+    --wf-icon: {{ block.settings.icon_color }};
+    --wf-btn-bg: {{ block.settings.button_bg }};
+    --wf-badge-bg: {{ block.settings.badge_bg }};
+    --wf-badge-text: {{ block.settings.badge_text }};
+  }
+</style>
+<script>
+  window.WishFlowConfig = {
+    proxyPath: {{ block.settings.proxy_path | default: '/apps/wishlist' | json }},
+    root: {{ routes.root_url | json }},
+    loginUrl: {{ routes.account_login_url | json }},
+    cartUrl: {{ routes.cart_url | json }},
+    customerId: {{ customer.id | json }},
+    currency: {{ cart.currency.iso_code | json }},
+    locale: {{ request.locale.iso_code | json }},
+    settings: {
+      icon: {{ block.settings.icon | json }},
+      headerIcon: {{ block.settings.show_header_icon | json }},
+      floating: {{ block.settings.show_floating | json }},
+      floatingPosition: {{ block.settings.floating_position | json }},
+      cards: {{ block.settings.show_on_cards | json }},
+      cardPosition: {{ block.settings.card_position | json }},
+      cardSelector: {{ block.settings.card_selector | json }},
+      requireLogin: {{ block.settings.require_login | json }},
+      toast: {{ block.settings.show_toast | json }},
+      afterCart: {{ block.settings.after_cart | json }},
+      share: {{ block.settings.show_share | json }}
+    },
+    texts: {
+      add: {{ block.settings.text_add | json }},
+      added: {{ block.settings.text_added | json }},
+      toastAdded: {{ block.settings.text_toast_added | json }},
+      toastRemoved: {{ block.settings.text_toast_removed | json }},
+      view: {{ block.settings.text_view | json }},
+      pageTitle: {{ block.settings.text_page_title | json }},
+      sharedTitle: {{ block.settings.text_shared_title | json }},
+      empty: {{ block.settings.text_empty | json }},
+      continueShopping: {{ block.settings.text_continue | json }},
+      addToCart: {{ block.settings.text_add_to_cart | json }},
+      addAll: {{ block.settings.text_add_all | json }},
+      soldOut: {{ block.settings.text_sold_out | json }},
+      remove: {{ block.settings.text_remove | json }},
+      clear: {{ block.settings.text_clear | json }},
+      share: {{ block.settings.text_share | json }},
+      copied: {{ block.settings.text_copied | json }},
+      login: {{ block.settings.text_login | json }},
+      loginLink: {{ block.settings.text_login_link | json }},
+      addedToCart: {{ block.settings.text_added_to_cart | json }},
+      viewCart: {{ block.settings.text_view_cart | json }},
+      unavailable: {{ block.settings.text_unavailable | json }}
+    }
+  };
+</script>
+<link rel="stylesheet" href="{{ 'wishflow.css' | asset_url }}" media="all">
+<script src="{{ 'wishflow.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "WishFlow wishlist",
+  "target": "body",
+  "settings": [
+    { "type": "header", "content": "Header" },
+    { "type": "checkbox", "id": "show_header_icon", "label": "Show wishlist icon in header", "default": true, "info": "Added next to the cart icon. If your theme's header can't be found, the floating button is shown instead." },
+    { "type": "checkbox", "id": "show_floating", "label": "Show floating wishlist button", "default": false },
+    {
+      "type": "select", "id": "floating_position", "label": "Floating button position", "default": "bottom-right",
+      "options": [
+        { "value": "bottom-right", "label": "Bottom right" },
+        { "value": "bottom-left", "label": "Bottom left" }
+      ]
+    },
+    { "type": "header", "content": "Product cards" },
+    { "type": "checkbox", "id": "show_on_cards", "label": "Show heart on product cards", "default": true, "info": "Collection pages, search results, home page product grids and recommendations." },
+    {
+      "type": "select", "id": "card_position", "label": "Heart position", "default": "top-right",
+      "options": [
+        { "value": "top-right", "label": "Top right" },
+        { "value": "top-left", "label": "Top left" }
+      ]
+    },
+    { "type": "text", "id": "card_selector", "label": "Custom product card selector", "info": "Advanced. Only needed if hearts don't appear on your theme's product cards, e.g. .product-card" },
+    { "type": "header", "content": "Style" },
+    {
+      "type": "select", "id": "icon", "label": "Icon", "default": "heart",
+      "options": [
+        { "value": "heart", "label": "Heart" },
+        { "value": "star", "label": "Star" },
+        { "value": "bookmark", "label": "Bookmark" }
+      ]
+    },
+    { "type": "color", "id": "active_color", "label": "Active icon color", "default": "#E0245E" },
+    { "type": "color", "id": "icon_color", "label": "Icon color", "default": "#121212" },
+    { "type": "color", "id": "button_bg", "label": "Card heart background", "default": "#FFFFFF" },
+    { "type": "color", "id": "badge_bg", "label": "Counter background", "default": "#121212" },
+    { "type": "color", "id": "badge_text", "label": "Counter text", "default": "#FFFFFF" },
+    { "type": "header", "content": "Behavior" },
+    { "type": "checkbox", "id": "require_login", "label": "Require customers to log in", "default": false, "info": "When off, guests can save items. Their wishlist moves to their account when they log in." },
+    { "type": "checkbox", "id": "show_toast", "label": "Show confirmation message", "default": true },
+    { "type": "checkbox", "id": "show_share", "label": "Allow sharing wishlists", "default": true },
+    {
+      "type": "select", "id": "after_cart", "label": "After adding to cart from wishlist", "default": "stay",
+      "options": [
+        { "value": "stay", "label": "Stay on wishlist page" },
+        { "value": "cart", "label": "Go to cart" }
+      ]
+    },
+    { "type": "text", "id": "proxy_path", "label": "Wishlist page path", "default": "/apps/wishlist", "info": "Only change this if you changed the app proxy URL in your Shopify admin." },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "text_add", "label": "Add button", "default": "Add to wishlist" },
+    { "type": "text", "id": "text_added", "label": "Added button", "default": "In your wishlist" },
+    { "type": "text", "id": "text_toast_added", "label": "Added message", "default": "Added to your wishlist" },
+    { "type": "text", "id": "text_toast_removed", "label": "Removed message", "default": "Removed from your wishlist" },
+    { "type": "text", "id": "text_view", "label": "View wishlist link", "default": "View wishlist" },
+    { "type": "text", "id": "text_page_title", "label": "Wishlist page title", "default": "My wishlist" },
+    { "type": "text", "id": "text_shared_title", "label": "Shared wishlist title", "default": "Shared wishlist" },
+    { "type": "text", "id": "text_empty", "label": "Empty wishlist", "default": "Your wishlist is empty. Tap the heart on any product to save it here." },
+    { "type": "text", "id": "text_continue", "label": "Continue shopping", "default": "Continue shopping" },
+    { "type": "text", "id": "text_add_to_cart", "label": "Add to cart", "default": "Add to cart" },
+    { "type": "text", "id": "text_add_all", "label": "Add all to cart", "default": "Add all to cart" },
+    { "type": "text", "id": "text_sold_out", "label": "Sold out", "default": "Sold out" },
+    { "type": "text", "id": "text_remove", "label": "Remove", "default": "Remove" },
+    { "type": "text", "id": "text_clear", "label": "Clear wishlist", "default": "Clear wishlist" },
+    { "type": "text", "id": "text_share", "label": "Share", "default": "Share wishlist" },
+    { "type": "text", "id": "text_copied", "label": "Link copied", "default": "Link copied" },
+    { "type": "text", "id": "text_login", "label": "Guest message", "default": "Log in to keep your wishlist on every device." },
+    { "type": "text", "id": "text_login_link", "label": "Log in link", "default": "Log in" },
+    { "type": "text", "id": "text_added_to_cart", "label": "Added to cart", "default": "Added to cart" },
+    { "type": "text", "id": "text_view_cart", "label": "View cart", "default": "View cart" },
+    { "type": "text", "id": "text_unavailable", "label": "Product unavailable", "default": "This product is no longer available" }
+  ]
+}
+{% endschema %}

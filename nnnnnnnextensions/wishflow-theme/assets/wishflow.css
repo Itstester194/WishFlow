@@ -1,0 +1,134 @@
+/* WishFlow storefront styles */
+:root {
+  --wf-active: #e0245e;
+  --wf-icon: #121212;
+  --wf-btn-bg: #ffffff;
+  --wf-badge-bg: #121212;
+  --wf-badge-text: #ffffff;
+}
+
+.wishflow-icon { display: inline-flex; line-height: 0; }
+.wishflow-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; transition: fill .15s ease, transform .15s ease; }
+.wishflow-btn.is-active .wishflow-icon svg { fill: var(--wf-active); stroke: var(--wf-active); }
+.wishflow-btn.is-active .wishflow-icon svg { animation: wishflow-pop .3s ease; }
+@keyframes wishflow-pop { 50% { transform: scale(1.25); } }
+
+.wishflow-btn { cursor: pointer; font: inherit; -webkit-tap-highlight-color: transparent; }
+.wishflow-btn[aria-busy="true"] { opacity: .7; }
+
+/* Product card heart */
+.wishflow-btn--card {
+  position: absolute; top: 10px; z-index: 5;
+  width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--wf-btn-bg); color: var(--wf-icon);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
+  transition: transform .15s ease;
+}
+.wishflow-btn--card:hover { transform: scale(1.08); }
+.wishflow-btn--top-right { right: 10px; }
+.wishflow-btn--top-left { left: 10px; }
+
+/* Product page block */
+.wishflow-pdp { display: flex; }
+.wishflow-pdp--center { justify-content: center; }
+.wishflow-pdp--right { justify-content: flex-end; }
+.wishflow-btn--pdp {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px; font-size: 15px; letter-spacing: .02em;
+  color: var(--wf-pdp-color, #121212); background: transparent;
+  border: 1px solid var(--wf-pdp-border, #121212); border-radius: 4px;
+  transition: background .15s ease, color .15s ease;
+}
+.wishflow-btn--pdp.wishflow-btn--full { width: 100%; }
+.wishflow-btn--pdp.wishflow-btn--solid { background: var(--wf-pdp-bg, #121212); color: #fff; border-color: var(--wf-pdp-bg, #121212); }
+.wishflow-btn--pdp.wishflow-btn--solid.is-active .wishflow-icon svg { fill: #fff; stroke: #fff; }
+.wishflow-btn--pdp.wishflow-btn--text { border: 0; padding: 0; min-height: 36px; text-decoration: underline; text-underline-offset: 3px; }
+.wishflow-btn--pdp.wishflow-btn--icon { width: 44px; padding: 0; border-radius: 50%; }
+.wishflow-btn--pdp.wishflow-btn--icon.wishflow-btn--full { width: 44px; }
+.wishflow-btn--pdp:hover { opacity: .85; }
+
+/* Header + floating */
+.wishflow-header-link {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; color: currentColor; text-decoration: none;
+}
+.wishflow-header-link .wishflow-icon svg { width: 22px; height: 22px; }
+.wishflow-count {
+  position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box;
+  border-radius: 9px; font-size: 11px; line-height: 18px; text-align: center; font-weight: 600;
+  background: var(--wf-badge-bg); color: var(--wf-badge-text);
+}
+.wishflow-count[hidden] { display: none; }
+.wishflow-floating {
+  position: fixed; bottom: 20px; z-index: 999;
+  width: 54px; height: 54px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--wf-btn-bg); color: var(--wf-active); text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+}
+.wishflow-floating .wishflow-icon svg { width: 24px; height: 24px; fill: var(--wf-active); stroke: var(--wf-active); }
+.wishflow-floating--bottom-right { right: 20px; }
+.wishflow-floating--bottom-left { left: 20px; }
+.wishflow-floating .wishflow-count { top: 2px; right: 2px; }
+.wishflow-page-active .wishflow-floating { display: none; }
+
+/* Toast */
+.wishflow-toast {
+  position: fixed; left: 50%; bottom: 24px; z-index: 2147483000;
+  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  display: flex; gap: 14px; align-items: center; max-width: calc(100vw - 32px);
+  padding: 12px 18px; border-radius: 8px; font-size: 14px;
+  background: #121212; color: #fff; box-shadow: 0 6px 24px rgba(0, 0, 0, .25);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.wishflow-toast.is-visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.wishflow-toast a { color: #fff; font-weight: 600; text-decoration: underline; white-space: nowrap; }
+.wishflow-toast--error { background: #8e1f0b; }
+
+/* Wishlist page */
+.wishflow-page-wrap { padding-top: 32px; padding-bottom: 64px; }
+.wishflow-page__header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+.wishflow-page__title { margin: 0; }
+.wishflow-page__count { opacity: .6; }
+.wishflow-page__toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; }
+.wishflow-page__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.wishflow-notice { padding: 12px 16px; margin: 0 0 20px; border-radius: 6px; background: rgba(0, 0, 0, .04); font-size: 14px; }
+.wishflow-notice a { font-weight: 600; }
+.wishflow-share { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 14px; }
+.wishflow-share__label { opacity: .7; }
+.wishflow-share__link { font: inherit; font-size: 14px; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+.wishflow-button {
+  font: inherit; font-size: 14px; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 42px; padding: 0 18px; border-radius: 4px; cursor: pointer; text-decoration: none;
+  border: 1px solid currentColor; background: transparent; color: inherit;
+}
+.wishflow-button--primary { background: #121212; color: #fff; border-color: #121212; }
+.wishflow-button:disabled { opacity: .45; cursor: not-allowed; }
+.wishflow-link { font: inherit; background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; color: inherit; }
+
+.wishflow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px; }
+@media (max-width: 600px) { .wishflow-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; } }
+.wishflow-item { position: relative; display: flex; flex-direction: column; }
+.wishflow-item__media { display: block; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 6px; background: rgba(0, 0, 0, .04); }
+.wishflow-item__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wishflow-item__remove, .wishflow-item__save {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; color: #121212; box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
+}
+.wishflow-item__body { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; flex: 1; }
+.wishflow-item__body .wishflow-button { margin-top: auto; width: 100%; }
+.wishflow-item__title { color: inherit; text-decoration: none; font-weight: 500; line-height: 1.35; margin: 0; }
+.wishflow-item__title:hover { text-decoration: underline; }
+.wishflow-item__note { margin: 0; font-size: 13px; opacity: .7; }
+.wishflow-item--missing { padding: 16px; border: 1px dashed rgba(0, 0, 0, .2); border-radius: 6px; }
+.wishflow-item__price { display: flex; gap: 8px; align-items: baseline; font-size: 15px; }
+.wishflow-price--compare { opacity: .55; font-size: 13px; }
+.wishflow-select { font: inherit; font-size: 14px; width: 100%; min-height: 38px; padding: 0 8px; border: 1px solid rgba(0, 0, 0, .25); border-radius: 4px; background: #fff; color: #121212; }
+.wishflow-empty { text-align: center; padding: 48px 16px; }
+.wishflow-empty__icon svg { width: 44px; height: 44px; fill: none; stroke: var(--wf-active); stroke-width: 1.5; }
+.wishflow-empty p { margin: 12px auto 20px; max-width: 420px; }
+.wishflow-page__loading { padding: 48px 0; text-align: center; opacity: .6; }
